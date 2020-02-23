@@ -21,12 +21,12 @@ public abstract class User extends Auditable {
     @Column(unique = true) //Make column values unique
     @Getter
     @Setter
-    private String email;
+    String email;
 
     @NotBlank
     @Getter
     @Setter
-    private String saltedHashedPassword;
+    String saltedHashedPassword;
 
     //A User can have multiple roles
     //Note that user and role are in a many to many relationship. That needs to be declared to JPA :P

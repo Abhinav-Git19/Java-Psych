@@ -1,6 +1,5 @@
 package com.psych.game.models;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +11,7 @@ import java.util.Set;
 
 // Idea of Serializable is convert DB data to native data types that programming language can work with
 @Entity
-@Table(name="Players")
+@Table(name= "players")
 public class Player extends User {
     //This kinds of enforce the not null constraints
     @NotBlank

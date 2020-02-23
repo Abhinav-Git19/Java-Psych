@@ -73,7 +73,7 @@ public class HelloWorldController {
     }
     @GetMapping("/player/{id}")
     public Player getPlayerById(@PathVariable(name="id") Long id){
-        return playerRepository.findById(id).orElseThrow(); //Thro
+        return playerRepository.findById(id).orElseThrow();
     }
 
     // These two functions can be created similarly for other Entities

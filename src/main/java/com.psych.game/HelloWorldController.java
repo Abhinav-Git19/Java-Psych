@@ -25,7 +25,7 @@ public class HelloWorldController {
     private QuestionRepository questionRepository;
 
 
-    @GetMapping("/")
+    @GetMapping("/welcome")
     public String hello(){
         return "Let's get ready to Psych!!";
     }

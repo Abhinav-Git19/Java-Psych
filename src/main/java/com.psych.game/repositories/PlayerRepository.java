@@ -3,7 +3,7 @@ package com.psych.game.repositories;
 /*
 Repositories allow you to provide Database related functionality inside a Java Interface (e.g select,update query with
 where clause
-Normally when you use Repository, you'll need to have a controller/service concrete class which will be implementing this
+Normally when you use Repository, you'll need to have a com.psych.game.controller/service concrete class which will be implementing this
 Repository, However @Repository annotation in Spring is going to take care of this automatically
  */
 

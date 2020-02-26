@@ -1,7 +1,5 @@
 package com.psych.game.models;
 
-import com.psych.game.models.Auditable;
-import com.psych.game.models.Roles;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,16 +19,25 @@ public abstract class User extends Auditable {
     @Column(unique = true) //Make column values unique
     @Getter
     @Setter
-    String email;
+    private String email;
+
 
     @NotBlank
     @Getter
     @Setter
-    String saltedHashedPassword;
+    private String saltedHashedPassword;
 
     //A User can have multiple roles
     //Note that user and role are in a many to many relationship. That needs to be declared to JPA :P
     @ManyToMany
     @Getter @Setter
-    Set<Roles> roles = new HashSet<>();
+    Set<Role> roles = new HashSet<>();
+
+    public User(){}
+
+    public User(User user){ //copy constructor
+        email=user.getEmail();
+        saltedHashedPassword=user.getSaltedHashedPassword();
+        roles=user.getRoles();
+    }
 }

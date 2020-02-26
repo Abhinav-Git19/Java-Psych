@@ -1,10 +1,20 @@
-package com.psych.game;
+package com.psych.game.controller;
 
+
+import com.psych.game.models.Game;
 import com.psych.game.models.GameMode;
 import com.psych.game.models.Player;
 import com.psych.game.models.Question;
+import com.psych.game.models.Round;
+import com.psych.game.models.User;
+
+
+import com.psych.game.repositories.GameRepository;
 import com.psych.game.repositories.PlayerRepository;
 import com.psych.game.repositories.QuestionRepository;
+import com.psych.game.repositories.RoundRepository;
+import com.psych.game.repositories.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +26,7 @@ import java.util.List;
 // RestController ->Allows you to manipulate entities in JSON
 @RestController
 @RequestMapping("/dev-test")
-public class HelloWorldController {
+public class DevTestController {
 
     @Autowired
     private PlayerRepository playerRepository;
@@ -24,14 +34,31 @@ public class HelloWorldController {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private GameRepository gameRepository;
 
-    @GetMapping("/welcome")
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoundRepository roundRepository;
+
+
+    @GetMapping("/")
     public String hello(){
         return "Let's get ready to Psych!!";
     }
 
     @GetMapping("/populate")
     public String poupulateDB(){
+
+        for(Player player: playerRepository.findAll()) {
+            player.getGames().clear();
+            playerRepository.save(player);
+        }
+        gameRepository.deleteAll();
+        playerRepository.deleteAll();
+        questionRepository.deleteAll();
 
         Player luffy =new Player.Builder()
                 .alias("Monkey D Luffy")
@@ -47,6 +74,16 @@ public class HelloWorldController {
                 .email("nicopone@onepiece.com")
                 .build();
         playerRepository.save(robin);
+
+        Game game=new Game();
+        game.setGameMode(GameMode.IS_THIS_A_FACT);
+        game.setLeader(luffy);
+        game.getPlayers().add(luffy);
+
+        gameRepository.save(game); //Simply adding it as such results in recursion in jackson when game endpoint is called
+        //We'll be needing Json Referencing
+
+
 
         questionRepository.save(new Question(
                 "What is the most important poneglyph",
@@ -67,6 +104,16 @@ public class HelloWorldController {
         return questionRepository.findById(id).orElseThrow(); //Throw exception on question with given id not being found
     }
 
+
+    @GetMapping("/users")
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
+    }
+    @GetMapping("/user/{id}")
+    public User getUserById(@PathVariable(name="id") Long id){
+        return userRepository.findById(id).orElseThrow();
+    }
+
     @GetMapping("/players")
     public List<Player> getAllPlayers(){
         return playerRepository.findAll();
@@ -75,6 +122,26 @@ public class HelloWorldController {
     public Player getPlayerById(@PathVariable(name="id") Long id){
         return playerRepository.findById(id).orElseThrow();
     }
+
+    @GetMapping("/games")
+    public List<Game> getAllGames(){
+        return gameRepository.findAll();
+    }
+    @GetMapping("/game/{id}")
+    public Game getGameById(@PathVariable(name="id") Long id){
+        return gameRepository.findById(id).orElseThrow();
+    }
+
+    @GetMapping("/rounds")
+    public List<Round> getAllRounds(){
+        return roundRepository.findAll();
+    }
+    @GetMapping("/round/{id}")
+    public Round getRoundById(@PathVariable(name="id") Long id){
+        return roundRepository.findById(id).orElseThrow();
+    }
+
+
 
     // These two functions can be created similarly for other Entities
 }

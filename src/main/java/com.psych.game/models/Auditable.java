@@ -1,5 +1,8 @@
 package com.psych.game.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,6 +21,10 @@ MappedSuper Class: Designates a class whose mapping information is applied to th
  */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.StringIdGenerator.class,
+        property = "id" //Its meant to specify jackson what to provide as expansion reference which in this case is string id
+)
 public abstract class Auditable implements Serializable {
     //These annotations are instructions to generate id for long id
     @Id

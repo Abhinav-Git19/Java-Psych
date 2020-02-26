@@ -1,10 +1,12 @@
 package com.psych.game.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -22,8 +24,9 @@ public class Question extends  Auditable{
     //This seems to be according to use case once the questions gets deleted, all associated ellenAnswers must also be
     //deleted which may or may not be the case
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "question")
+    @JsonManagedReference //Tells Questions owns EllenAnswers
     @Getter @Setter
-    private Set<EllenAnswer> ellenAnswers;
+    private Set<EllenAnswer> ellenAnswers = new HashSet<>();
 
     //Questions would be associated with the GameMode
     @Enumerated(EnumType.STRING)

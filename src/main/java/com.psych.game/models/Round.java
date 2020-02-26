@@ -1,5 +1,9 @@
 package com.psych.game.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.psych.game.exceptions.InvalidGameActionException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,21 +17,25 @@ import java.util.Map;
 public class Round extends Auditable{
     @ManyToOne
     @Getter @Setter
+    @JsonBackReference
     @NotNull
     private Game game;
 
     @ManyToOne
     @Getter @Setter
+    @JsonIdentityReference
     private Question question;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @Getter @Setter
+    @JsonManagedReference
     private Map<Player,PlayerAnswer> playerAnswers =new HashMap<>();
 
 
     @ManyToMany(cascade = CascadeType.ALL) //Another way of looking at this is it indicates composition relationship
     @Getter @Setter
-    private Map<Player,PlayerAnswer> selectedAnswers =new HashMap<>();
+    @JsonManagedReference
+    private Map<Player,PlayerAnswer> submittedAnswers =new HashMap<>();
 
     @NotNull
     @Getter @Setter
@@ -36,7 +44,21 @@ public class Round extends Auditable{
     // A round may or may not have ellenAnswer, but we'll worry about that later;
     @ManyToOne
     @Getter @Setter
+    @JsonIdentityReference
     private EllenAnswer ellenAnswer;
 
 
+    public void submitAnswer(Player player, String answer) throws InvalidGameActionException {
+        if(submittedAnswers.containsKey(player))
+            throw new InvalidGameActionException("Playere already submitted answere");
+
+        for (PlayerAnswer exisitingAnswer : submittedAnswers.values()){
+            throw new InvalidGameActionException("Duplicate Answer");
+        }
+        //If player has already submitted answers or duplicate answers reject
+    }
+
+    public boolean allAnswersSubmitted(int numplayers) {
+        return submittedAnswers.size() == numplayers;
+    }
 }

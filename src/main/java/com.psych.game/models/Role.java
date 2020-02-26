@@ -13,7 +13,7 @@ make the code change. So to avoid that, we are considering it as an entity
  */
 @Entity
 @Table(name ="roles")
-public class Roles extends Auditable{
+public class Role extends Auditable{
 
     @NotBlank
     @Column(unique = true)

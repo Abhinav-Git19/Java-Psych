@@ -1,5 +1,7 @@
 package com.psych.game.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +29,7 @@ public class Player extends User {
     states of that player should undergo the same
      */
     @OneToOne(cascade = CascadeType.ALL)
+    @JsonManagedReference
     @Getter @Setter
     private Stat stats= new Stat();
 
@@ -36,6 +39,7 @@ public class Player extends User {
     relationship
      */
     @ManyToMany(mappedBy = "players") //Cascading doesn't have to happen here, if game gets deleted, player should not be deleted
+    @JsonIdentityReference //This is prevent unintended expansions
     @Getter @Setter
     private Set<Game> games =new HashSet<>();
 
@@ -43,8 +47,8 @@ public class Player extends User {
     public Player(){}
 
     private Player(Builder builder) {
-        email = builder.email;
-        saltedHashedPassword = builder.saltedHashedPassword;
+        setEmail(builder.email);
+        setSaltedHashedPassword(builder.saltedHashedPassword);
         alias = builder.alias;
         psychFaceURL = builder.psychFaceURL;
         picURL = builder.picURL;

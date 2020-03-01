@@ -5,7 +5,6 @@ import com.psych.game.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,12 +43,9 @@ public class CustomUserDetails extends User implements UserDetails {
 
     @Override
     public String getPassword() {
-        //return super.getSaltedHashedPassword();
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        /*
-        Here you encode your passwords before
-         */
-        return encoder.encode(super.getSaltedHashedPassword());
+        return super.getSaltedHashedPassword();
+        //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        //return encoder.encode(super.getSaltedHashedPassword());
     }
 
     @Override

@@ -1,0 +1,12 @@
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+### Java ###
+# Compiled class file
+*.class
+target/
+out/
+.idea/

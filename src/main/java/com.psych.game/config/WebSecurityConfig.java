@@ -26,8 +26,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          */
         http
                 .authorizeRequests()
-                .antMatchers("/dev-test/players").permitAll() //This all access from this endpoint //Ant framework is our framework
-                .anyRequest().authenticated() //This endpoint is authenticated
+                .antMatchers("/dev-test/games").permitAll() //This all access from this endpoint //Ant framework is our framework
+                .anyRequest().authenticated() //This endpoint is to be authenticated
                 .and().formLogin().permitAll()
                 .and().logout().permitAll();
     }

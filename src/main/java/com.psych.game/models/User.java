@@ -2,6 +2,7 @@ package com.psych.game.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -24,17 +25,15 @@ public abstract class User extends Auditable {
 
     @NotBlank
     @Getter
-    @Setter
     private String saltedHashedPassword;
 
     /*
     You also have option to encode the password before you send to DB. This is generally considered good practice
     e.g -
-    public void setsaltedHashedPassword(String value){
-
+    */
+    public void setSaltedHashedPassword(String value){
         this.saltedHashedPassword = new BCryptPasswordEncoder().encode(value);
     }
-     */
 
     //A User can have multiple roles
     //Note that user and role are in a many to many relationship. That needs to be declared to JPA :P

@@ -5,12 +5,14 @@ import com.psych.game.models.Player;
 import com.psych.game.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Service
+
+//Declaring it as a service prevents us to return in form of json
+@RestController
 @RequestMapping("/play")
 public class GamePlayController {
 
@@ -28,9 +30,9 @@ public class GamePlayController {
     // abhinssi-psych.heroku.app/play/submit-answer/ asdas
 
     @GetMapping("/submit-answer/{answer}")
-    public void submitAnswer(Authentication authentication,@PathVariable(name ="answer") String answer) throws InvalidGameActionException {
+    public void submitAnswer(Authentication authentication,@PathVariable(name ="answer") String answer) throws Exception, InvalidGameActionException {
         Player player = playerRepository.findByEmail(authentication.getName()).orElseThrow();
-        // Single Responsibility at play here.. One class one responsibility, anything more...delegations needs to be done
+        //Single Responsibility at play here.. One class one responsibility, anything more...delegations needs to be done
         player.getCurrentGame().submitAnswer(player,answer);
     }
 }

@@ -26,14 +26,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          */
         http
                 .authorizeRequests()
-                .antMatchers("/dev-test/games").permitAll() //This all access from this endpoint //Ant framework is our framework
+                .antMatchers("/dev-test/*").permitAll() //This all access from this endpoint //Ant framework is our framework
                 .anyRequest().authenticated() //This endpoint is to be authenticated
                 .and().formLogin().permitAll()
                 .and().logout().permitAll();
     }
     //Spring does not allow password to be stored in plain-text format so it prompts you to use a password encoder
-    //Also it needs it own encoder object to know what password you are entering
-    @Bean //Bean for Spring to work with
+    //Also it needs it own encoder object to know what password you are entering at the login authentication endpoint
+    // Or else it won't be able to decipher it
+    @Bean //Bean is provided for Spring to work with
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(5);
     }

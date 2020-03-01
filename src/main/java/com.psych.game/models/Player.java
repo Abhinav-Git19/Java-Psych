@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 // Idea of Serializable is convert DB data to native data types that programming language can work with
@@ -43,6 +44,18 @@ public class Player extends User {
     @Getter @Setter
     private Set<Game> games =new HashSet<>();
 
+
+    //This function is supposed to return the game in which player is active, let's just say it the first element in
+    // the set itself
+    public Game getCurrentGame() throws Exception {
+
+        Iterator it = games.iterator();
+        if(games.size()>0)
+            return (Game) it.next();
+        else
+            return new Game(); //Return Empty Game Object
+    }
+
     // This is required as Spring works with default constructors of entities even though it goes against Builder Pattern
     public Player(){}
 
@@ -55,12 +68,6 @@ public class Player extends User {
 
 
     }
-
-    public Game getCurrentGame() {
-        //todo
-        return new Game();
-    }
-
 
     public static final class Builder {
         private @Email @NotBlank String email;

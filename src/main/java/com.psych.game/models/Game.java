@@ -77,7 +77,7 @@ public class Game extends Auditable{
     public void addPlayer(Player player) throws InvalidGameActionException {
         /*
         Regarding Exceptions: Your exception should follow the middle ground of relating to one class only.. Or else
-        your exceptions would either be too many or too generic
+        your exceptions would either be too specific or too generic
          */
         if(!gameStatus.equals(GameStatus.PLAYERS_JOINING))
             throw new InvalidGameActionException("Can't join after game is started");

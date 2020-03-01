@@ -52,6 +52,9 @@ public class DevTestController {
     @GetMapping("/populate")
     public String poupulateDB(){
 
+        /*
+        This is done to inorder to maintain the foreign key constraint
+         */
         for(Player player: playerRepository.findAll()) {
             player.getGames().clear();
             playerRepository.save(player);

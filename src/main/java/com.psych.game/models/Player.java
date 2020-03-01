@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name= "players")
 public class Player extends User {
-    //This kinds of enforce the not null constraints
+    //This kind of enforce the not null constraints
     @NotBlank
     @Getter @Setter
     private String alias;
@@ -54,6 +54,11 @@ public class Player extends User {
         picURL = builder.picURL;
 
 
+    }
+
+    public Game getCurrentGame() {
+        //todo
+        return new Game();
     }
 
 

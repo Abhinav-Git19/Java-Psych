@@ -19,14 +19,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService customUserDetailsService;
     @Override
     public void configure(HttpSecurity http) throws Exception{
+
+        /*
+        the hasRole function after anyRequest let you tell which role is granted permissions
+        e.g - http.antMatchers("/dev-test/*").hasRole("ROLE_xyz");
+         */
         http
                 .authorizeRequests()
-                .antMatchers("/dev-test/*").permitAll() //This all access from this endpoint //Ant framework is our framework
+                .antMatchers("/dev-test/players").permitAll() //This all access from this endpoint //Ant framework is our framework
                 .anyRequest().authenticated() //This endpoint is authenticated
                 .and().formLogin().permitAll()
                 .and().logout().permitAll();
     }
-    @Bean
+    //Spring does not allow password to be stored in plain-text format so it prompts you to use a password encoder
+    //Also it needs it own encoder object to know what password you are entering
+    @Bean //Bean for Spring to work with
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(5);
     }

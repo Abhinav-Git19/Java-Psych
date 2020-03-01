@@ -1,7 +1,6 @@
 package com.psych.game.models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;

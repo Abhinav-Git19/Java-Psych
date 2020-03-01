@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-/*Role could have been Enumertation but let's say if require some new role to be entertained in the syetem, we'll have
+/*Role could have been Enumeration but let's say if require some new role to be entertained in the syetem, we'll have
 make the code change. So to avoid that, we are considering it as an entity
  */
 @Entity

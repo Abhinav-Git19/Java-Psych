@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/*
+This is a authentication service you build. This service needs to UserDetailsService interface which is implemented by
+CustomUserDetails class
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
@@ -22,6 +26,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         Optional<User> user = userRepository.findByEmail(email);
         if(user.isEmpty())
             throw new NoSuchUserException("No user registered with " + email);
-        return new CustomUserDetails(user.get());
+        return new CustomUserDetails(user.get()); //Avoid confusion: here get() is part of Optional class that fetches user object
     }
 }

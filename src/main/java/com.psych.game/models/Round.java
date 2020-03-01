@@ -29,13 +29,13 @@ public class Round extends Auditable{
     @ManyToMany(cascade = CascadeType.ALL)
     @Getter @Setter
     @JsonManagedReference
-    private Map<Player,PlayerAnswer> playerAnswers =new HashMap<>();
+    private Map<Player,PlayerAnswer> submittedAnswers =new HashMap<>();
 
 
     @ManyToMany(cascade = CascadeType.ALL) //Another way of looking at this is it indicates composition relationship
     @Getter @Setter
     @JsonManagedReference
-    private Map<Player,PlayerAnswer> submittedAnswers =new HashMap<>();
+    private Map<Player,PlayerAnswer> selectedAnswers =new HashMap<>();
 
     @NotNull
     @Getter @Setter
@@ -47,18 +47,46 @@ public class Round extends Auditable{
     @JsonIdentityReference
     private EllenAnswer ellenAnswer;
 
+    public Round() {}
+
+    // The Ellen answer could be there or could not be there
+    public Round(@NotNull Game game, Question question, @NotNull int roundNumber) {
+        this.game = game;
+        this.question = question;
+        this.roundNumber = roundNumber;
+    }
+
 
     public void submitAnswer(Player player, String answer) throws InvalidGameActionException {
         if(submittedAnswers.containsKey(player))
-            throw new InvalidGameActionException("Playere already submitted answere");
+            throw new InvalidGameActionException("Player already submitted answer");
 
-        for (PlayerAnswer exisitingAnswer : submittedAnswers.values()){
-            throw new InvalidGameActionException("Duplicate Answer");
-        }
         //If player has already submitted answers or duplicate answers reject
+        for (PlayerAnswer exisitingAnswer : submittedAnswers.values()){
+            if(answer.equals(exisitingAnswer.getAnswer()))
+                throw new InvalidGameActionException("Duplicate Answer");
+        }
+        submittedAnswers.put(player,new PlayerAnswer(this,player,answer));
+
     }
 
     public boolean allAnswersSubmitted(int numplayers) {
         return submittedAnswers.size() == numplayers;
+    }
+
+
+    public void selectAnswer(Player player, PlayerAnswer selectedAnswer) throws InvalidGameActionException {
+        if(selectedAnswers.containsKey(player))
+            throw new InvalidGameActionException("Player already selected answer");
+
+        //User can't select your own answer
+        if(selectedAnswer.getPlayer().equals(player))
+            throw new InvalidGameActionException("Can't select your own answer");
+
+        selectedAnswers.put(player,selectedAnswer);
+    }
+
+    public boolean allAnswersSelected(int numplayers) {
+        return selectedAnswers.size() == numplayers;
     }
 }

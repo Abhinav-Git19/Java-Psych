@@ -27,14 +27,28 @@ public abstract class User extends Auditable {
     @Setter
     private String saltedHashedPassword;
 
+    /*
+    You also have option to encode the password before you send to DB. This is generally considered good practice
+    e.g -
+    public void setsaltedHashedPassword(String value){
+
+        this.saltedHashedPassword = new BCryptPasswordEncoder().encode(value);
+    }
+     */
+
     //A User can have multiple roles
     //Note that user and role are in a many to many relationship. That needs to be declared to JPA :P
-    @ManyToMany
+    //Fetch will tell Spring not to load this collection in a lazy manner
+    @ManyToMany(fetch = FetchType.EAGER)
     @Getter @Setter
     Set<Role> roles = new HashSet<>();
 
     public User(){}
 
+    /*
+    Note: Constructor for abstract class seems weird but it often used when along with the enforcement you also some
+    initialization of abstract class fields
+     */
     public User(User user){ //copy constructor
         email=user.getEmail();
         saltedHashedPassword=user.getSaltedHashedPassword();

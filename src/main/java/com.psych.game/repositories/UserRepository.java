@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository //Note that User is not a concrete class
 public interface UserRepository extends JpaRepository<User,Long> {
-    //Email as has to be valid field
+    //Email  has to be valid field
     Optional<User> findByEmail(String email);
 }

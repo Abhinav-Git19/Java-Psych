@@ -6,6 +6,8 @@ import com.psych.game.Utils;
 import com.psych.game.exceptions.InvalidGameActionException;
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -20,15 +22,21 @@ public class Game extends Auditable{
     @Getter @Setter
     private Set<Player> players=new HashSet<>();
 
-    @Getter @Setter
-    @Enumerated(EnumType.STRING) //This is to tell that this ENUM in java needs to be stored as String in Database
+    //(Updated) "Earlier this was Enum"  @Enumerated(EnumType.STRING)
+    //This is to tell that this ENUM in java needs to be stored as String in Database
+    @ManyToOne
+    @JsonIdentityReference
+    @Getter
+    @Setter
     @NotNull
     private GameMode gameMode;
 
     //It matters in which order the rounds is going to come up..so it would be store in List
     // If game is deleted, rounds must be deleted
     @OneToMany(mappedBy = "game" ,cascade = CascadeType.ALL) //This mapping will automatically tell JPA to index rounds table to according to gameId
-    @Getter @Setter
+    @OrderBy(value = "round_number asc") //JPA converts roundNumber to round_number
+    @Getter
+    @Setter
     @JsonManagedReference
     private List<Round> rounds=new ArrayList<>();
 
@@ -70,7 +78,10 @@ public class Game extends Auditable{
         this.numRounds = numRounds;
         this.hasEllen = hasEllen;
         this.leader = leader;
-        this.players.add(leader);
+        try {
+            this.addPlayer(leader);
+        } catch (InvalidGameActionException ignored) {
+        }
     }
 
 
@@ -82,6 +93,7 @@ public class Game extends Auditable{
         if(!gameStatus.equals(GameStatus.PLAYERS_JOINING))
             throw new InvalidGameActionException("Can't join after game is started");
         this.players.add(player);
+        player.setCurrentGame(this);
 
     }
 
@@ -93,6 +105,9 @@ public class Game extends Auditable{
         if(!gameStatus.equals(GameStatus.PLAYERS_JOINING))
             throw new InvalidGameActionException("Can't leave after game is started");
         this.players.remove(player);
+
+        if(player.getCurrentGame().equals(this))
+            player.setCurrentGame(null);
 
         if(players.size()==0 || (players.size()==1 && !gameStatus.equals(GameStatus.PLAYERS_JOINING))){
             endGame();
@@ -190,17 +205,39 @@ public class Game extends Auditable{
     private Round getCurrentRound() throws InvalidGameActionException {
         if(rounds.size()==0)
             throw new InvalidGameActionException("Game has not started");
-
+        // TODO: 22/03/20   This itself doesn't represent the correct order...Logical issue
         return rounds.get(rounds.size()-1);
     }
 
     private void endGame() {
         gameStatus=GameStatus.ENDED;
+
+        //Once the game is over all players current Game session needs to be ended
+        for(Player player: players){
+
+            //This if block is to ensure that we are terminating only the current game
+            //for the players whose status is reached the end game. There might be the
+            // for all list of players, some of the player currentGame may not be the
+            // same *current game* :p
+            if(player.getCurrentGame().equals(this))
+                player.setCurrentGame(null);
+        }
     }
 
-    public String getGameState(){
-        return "Return some string which will convey the state of game to frontend";
-        //todo
+    public JSONObject getGameState(){
+        JSONObject state = new JSONObject();
+        state.put("id",getId());
+        state.put("numRounds",numRounds);
+        state.put("mode",gameMode.getName());
+        JSONArray playerData = new JSONArray();
+
+        for (Player player:players){
+            JSONObject data = new JSONObject();
+            data.put("alias",player.getAlias());
+            playerData.add(data);
+        }
+        state.put("players",playerData);
+        return state;
 
     }
 

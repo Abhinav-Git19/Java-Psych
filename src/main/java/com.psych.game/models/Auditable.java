@@ -48,6 +48,16 @@ public abstract class Auditable implements Serializable {
     @Setter
     private Date updateDate =new Date();
 
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof Auditable){
+            //Type casting necessary as we are dealing generic object here
+            return ((Auditable)obj).getId().equals(getId());
+        }
+        // Delgated to parent class here
+        return super.equals(obj);
+    }
+
 
 
 }

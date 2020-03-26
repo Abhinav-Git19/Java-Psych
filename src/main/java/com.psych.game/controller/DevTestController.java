@@ -9,11 +9,13 @@ import com.psych.game.models.Round;
 import com.psych.game.models.User;
 
 
+import com.psych.game.repositories.GameModeRepository;
 import com.psych.game.repositories.GameRepository;
 import com.psych.game.repositories.PlayerRepository;
 import com.psych.game.repositories.QuestionRepository;
 import com.psych.game.repositories.RoundRepository;
 import com.psych.game.repositories.UserRepository;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +40,9 @@ public class DevTestController {
     private GameRepository gameRepository;
 
     @Autowired
+    private GameModeRepository gameModeRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -57,11 +62,13 @@ public class DevTestController {
          */
         for(Player player: playerRepository.findAll()) {
             player.getGames().clear();
+            player.setCurrentGame(null);
             playerRepository.save(player);
         }
         gameRepository.deleteAll();
         playerRepository.deleteAll();
         questionRepository.deleteAll();
+        gameModeRepository.deleteAll();
 
         Player luffy =new Player.Builder()
                 .alias("Monkey D Luffy")
@@ -78,8 +85,14 @@ public class DevTestController {
                 .build();
         playerRepository.save(robin);
 
+        GameMode isThisAFact = new GameMode("Is This A Fact?","https://irs.www.warnerbros.com/mobile-app-games-square-jpeg/psych_mobile_keyart.jpg","Let's check your general knowledge");
+        gameModeRepository.save(isThisAFact);
+        gameModeRepository.save(new GameMode("Word Up","https://irs.www.warnerbros.com/mobile-app-games-square-jpeg/psych_mobile_keyart.jpg","vocab guru"));
+        gameModeRepository.save(new GameMode("Un-scramble","https://irs.www.warnerbros.com/mobile-app-games-square-jpeg/psych_mobile_keyart.jpg","make sense of jingled words!"));
+        gameModeRepository.save(new GameMode("Movie Buff","https://irs.www.warnerbros.com/mobile-app-games-square-jpeg/psych_mobile_keyart.jpg","guess the movie"));
+
         Game game=new Game();
-        game.setGameMode(GameMode.IS_THIS_A_FACT);
+        game.setGameMode(isThisAFact);
         game.setLeader(luffy);
         game.getPlayers().add(luffy);
 
@@ -91,7 +104,7 @@ public class DevTestController {
         questionRepository.save(new Question(
                 "What is the most important poneglyph",
                 "Rio poneglyph",
-                GameMode.IS_THIS_A_FACT
+                isThisAFact
         ));
 
 
